@@ -42,24 +42,31 @@ export const aiSummariseCommit = async (diff: string) => {
     It is given only as an example of appropriate comments.`,
     `Please summarise the following diff file: \n\n${diff}`,
   ]);
-
   return response.response.text();
 };
 
 export async function summariseCode(doc: Document) {
-  console.log("getting summary for the code", doc.metadata.source);
-  const code = doc.pageContent.slice(0, 10000);
+  try {
+    const code = doc.pageContent.slice(0, 10000);
 
-  const response = await model.generateContent([
-    `You are an intelligent senior software engineer who specialises in onboarding junior software engineers onto projects`,
-    `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file
+    const response = await model.generateContent([
+      `You are an intelligent senior software engineer who specialises in onboarding junior software engineers onto projects`,
+      `You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file
     here is the soure code:
 ---
 ${code}
 ---
 Give a summary no more than 100 words of the above code`,
-  ]);
-  return response.response.text();
+    ]);
+    console.log(
+      "getting summary for the code",
+      doc.metadata.source,
+      response.response.text(),
+    );
+    return response.response.text();
+  } catch (error) {
+    return "";
+  }
 }
 
 export async function generateEmbedding(summary: string) {

@@ -48,7 +48,7 @@ export const indexGithubRepo = async (
       await db.$executeRaw`
       UPDATE "SourceCodeEmbedding"
       SET "summaryEmbedding" = ${embedding.embedding}::vector
-      WHERE "id" = 
+      WHERE "id" = ${sourceCodeEmbedding.id}
       `;
     }),
   );

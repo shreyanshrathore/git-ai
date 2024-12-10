@@ -6,8 +6,6 @@ export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const githubUrl = "https://github.com/docker/genai-stack";
-
 type Response = {
   commitHash: string;
   commitMessage: string;
@@ -50,7 +48,7 @@ async function summarizeCommit(githubUrl: string, commitHash: string) {
       Accept: "application/vnd.github.v3.diff",
     },
   });
-
+  console.log("here for summary", data);
   const result = (await aiSummariseCommit(data)) || "";
   return result;
 }
@@ -62,7 +60,6 @@ export const pollCommits = async (projectId: string) => {
     projectId,
     commitHashes,
   );
-
   const summaryResponses = await Promise.allSettled(
     unProcessedCommits.map((commit) => {
       return summarizeCommit(githubUrl, commit.commitHash);
@@ -99,7 +96,6 @@ export const fetchProjectGithubUrl = async (projectId: string) => {
       githubUrl: true,
     },
   });
-
   if (!project?.githubUrl) {
     throw new Error("Project has no github url");
   }
@@ -123,5 +119,3 @@ async function filterUnprocessedCommits(
 
   return unProcessedCommits;
 }
-
-await pollCommits("cm4ej2ezc000912oce5tsn011").then(console.log);
