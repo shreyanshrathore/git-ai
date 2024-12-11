@@ -45,26 +45,17 @@ export async function askQuestion(question: string, projectId: string) {
       AI has the sum of all knowledge in their brain, and is able to accurately answer nearly any question about any topic in conversation.
       If the question is asking about code or specific file, AI will provide the detailed answer, giving step by step explanation of the code.  If the question is not related to the code, AI will provide a concise and informative answer.
 
-      START CONTEXT BLOCK
-      ${context}
-      END OF CONTEXT BLOCK
+Here is the question: ${question}
 
-      START QUESTION
-      ${question}
-      END OF QUESTION
+Here is the context from the codebase:
+${context}
 
-      AI assistant will take into account any CONTEXT BLOCK that is provided in a conversation.
-      If the context does not provide the answer to question, the AI assistant will say, "I'm sorry, but I don't know the answer to that question".
-      AI assistant will not apologize for previous responses, but instead will indicated new information was gained.
-      AI assistant will not invent anything that is not drawn directly from the context.
-      Answer in markdown syntax. with code snippets if needed. Be as detailed as possible when answering
+Please answer the question based on the context provided.
+
       `,
     });
-
-    for await (const delta of textStream) {
-      stream.update(delta);
-    }
-
-    stream.done();
   };
+  let prompt = `
+
+  `;
 }
