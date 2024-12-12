@@ -67,4 +67,8 @@ export async function askQuestion(question: string, projectId: string) {
 
     stream.done();
   };
+  return {
+    output: stream.value,
+    filesReferences: result,
+  };
 }
