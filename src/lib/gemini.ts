@@ -58,11 +58,6 @@ ${code}
 ---
 Give a summary no more than 100 words of the above code`,
     ]);
-    console.log(
-      "getting summary for the code",
-      doc.metadata.source,
-      response.response.text(),
-    );
     return response.response.text();
   } catch (error) {
     return "";

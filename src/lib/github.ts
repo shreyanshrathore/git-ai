@@ -49,7 +49,6 @@ async function summarizeCommit(githubUrl: string, commitHash: string) {
       Accept: "application/vnd.github.v3.diff",
     },
   });
-  console.log("here for summary", data);
   const result = (await aiSummariseCommit(data)) || "";
   return result;
 }
@@ -61,7 +60,6 @@ export const pollCommits = async (projectId: string) => {
     projectId,
     commitHashes,
   );
-  console.log("reached", unProcessedCommits);
   const summaryResponses = await Promise.allSettled(
     unProcessedCommits.map((commit) => {
       return summarizeCommit(githubUrl, commit.commitHash);
@@ -131,7 +129,6 @@ async function filterUnprocessedCommits(
   });
   if (!processedCommit.length) {
     console.log("yello");
-    console.log(processedCommit);
     return commitHashes;
   }
 
