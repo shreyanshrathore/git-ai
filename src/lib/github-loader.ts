@@ -9,7 +9,7 @@ export const LoadGithubRepo = async (
 ) => {
   const loader = new GithubRepoLoader(githubUrl, {
     accessToken: githubToken || "",
-    branch: "master",
+    branch: "main",
     ignoreFiles: [
       "package-lock.json",
       "yarn.lock",
@@ -39,7 +39,7 @@ export const indexGithubRepo = async (
       const sourceCodeEmbedding = await db.sourceCodeEmbedding.create({
         data: {
           summary: embedding.summary,
-          filename: embedding.fileName,
+          fileName: embedding.fileName,
           sourceCode: embedding.sourceCode,
           projectId,
         },

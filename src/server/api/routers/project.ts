@@ -13,7 +13,6 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      console.log("-------user---", ctx.user.userId);
       const project = await ctx.db.project.create({
         data: {
           githubUrl: input.githubUrl,
@@ -25,7 +24,7 @@ export const projectRouter = createTRPCRouter({
           },
         },
       });
-      await indexGithubRepo(project.id, input.githubUrl, input.githubToken);
+      await indexGithubRepo(project.id, input.githubUrl, input?.githubToken);
       await pollCommits(project.id);
       return project;
     }),

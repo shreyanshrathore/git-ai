@@ -20,7 +20,7 @@ const AskQuestionCard = () => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
-  const [fileReferences, setFilesReferences] = useState<
+  const [filesReferences, setFilesReferences] = useState<
     {
       fileName: string;
       sourceCode: string;
@@ -31,41 +31,41 @@ const AskQuestionCard = () => {
   const [open, setOpen] = useState(false);
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!project?.id) return;
     setAnswer("");
     setFilesReferences([]);
-    if (!project?.id) return;
     setLoading(true);
-
     const { output, filesReferences } = await askQuestion(question, project.id);
-    setOpen(true);
     setFilesReferences(filesReferences);
 
+    setOpen(true);
     for await (const delta of readStreamableValue(output)) {
       if (delta) {
         setAnswer((ans) => ans + delta);
       }
     }
+    setLoading(false);
+    console.log(answer, "Answer");
   };
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[80vw]">
           <DialogHeader>
-            <DialogTitle>
-              <img
-                src="../create/undraw_github.svg"
-                width={40}
-                height={40}
-                alt="logo"
-              />
-            </DialogTitle>
+            <DialogTitle>Logo</DialogTitle>
           </DialogHeader>
           <MDEditor.Markdown
             source={answer}
             className="!h-full max-h-[40vh] max-w-[70vw] overflow-scroll"
           />
           <div className="h-4"></div>
-          <CodeRefernces filesReferences={fileReferences} />
+          <CodeRefernces filesReferences={filesReferences} />
+
+          {/* {answer}
+          <h1>File references</h1>
+          {filesReferences.map((file) => {
+            return <span>{file.fileName}</span>;
+          })} */}
         </DialogContent>
       </Dialog>
 

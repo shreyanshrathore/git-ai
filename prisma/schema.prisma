@@ -76,7 +76,7 @@ model SourceCodeEmbedding {
 
     summaryEmbedding Unsupported("vector(768)")?
     sourceCode       String
-    filename         String
+    fileName         String
     summary          String
 
     projectId String

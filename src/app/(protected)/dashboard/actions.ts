@@ -14,25 +14,23 @@ export async function askQuestion(question: string, projectId: string) {
   const stream = createStreamableValue();
 
   const queryVector = await generateEmbedding(question);
-
   const vectorQuery = `[${queryVector.join(",")}]`;
 
   const result = (await db.$queryRaw`
-  SELECT "filename", "sourceCode", "summary", 
-  1 - ("summaryEmbedding" <==> ${vectorQuery}::vector) AS similarity
+  SELECT "fileName", "sourceCode", "summary", 
+  1 - ("summaryEmbedding" <=> ${vectorQuery}::vector) AS similarity
   FROM "SourceCodeEmbedding"
-  WHERE 1- ("summaryEmbedding" <==> ${vectorQuery}::vector) > 0.5
+  WHERE 1 - ("summaryEmbedding" <=> ${vectorQuery}::vector) > .5
   AND "projectId" = ${projectId}
   ORDER BY similarity DESC
   LIMIT 10
   `) as { fileName: string; sourceCode: string; summary: string }[];
 
   let context = "";
-
   for (const doc of result) {
-    context += `source: ${doc.fileName}\n code content: ${doc.sourceCode}\n summary: ${doc.summary}\n\n`;
+    context += `source: ${doc.fileName}\ncode content: ${doc.sourceCode}\n summary: ${doc.summary}\n\n`;
   }
-  async () => {
+  (async () => {
     const { textStream } = await streamText({
       model: google("gemini-1.5-flash"),
       prompt: `You are AI code assistant who answers question about the codebase, Your target audience is a technical intern 
@@ -66,7 +64,7 @@ export async function askQuestion(question: string, projectId: string) {
     }
 
     stream.done();
-  };
+  })();
   return {
     output: stream.value,
     filesReferences: result,

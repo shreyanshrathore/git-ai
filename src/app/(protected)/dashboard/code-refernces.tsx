@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { lucario } from "react-syntax-highlighter/dist/esm/styles/prism";

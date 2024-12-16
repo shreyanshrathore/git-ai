@@ -2,6 +2,7 @@ import { Octokit } from "octokit";
 import { db } from "~/server/db";
 import axios from "axios";
 import { aiSummariseCommit } from "./gemini";
+import jsonfile from "jsonfile";
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
@@ -33,7 +34,7 @@ export const getCommitHashes = async (
       new Date(a.commit.author.date).getTime(),
   ) as any[];
 
-  return sortedCommit.slice(0, 15).map((commit) => ({
+  return sortedCommit.slice(0, 10).map((commit) => ({
     commitHash: commit.sha as string,
     commitMessage: commit.commit.message ?? "",
     commitAuthorAvatar: commit.author.avatar_url ?? "",
@@ -60,6 +61,7 @@ export const pollCommits = async (projectId: string) => {
     projectId,
     commitHashes,
   );
+  console.log("reached", unProcessedCommits);
   const summaryResponses = await Promise.allSettled(
     unProcessedCommits.map((commit) => {
       return summarizeCommit(githubUrl, commit.commitHash);
@@ -67,6 +69,7 @@ export const pollCommits = async (projectId: string) => {
   );
 
   const summaries = summaryResponses.map((summary) => {
+    console.log(summary, "summary------------------");
     if (summary.status === "fulfilled") {
       return summary.value;
     }
@@ -75,6 +78,22 @@ export const pollCommits = async (projectId: string) => {
 
   const commits = await db.commit.createMany({
     data: summaries.map((summary, index) => {
+      jsonfile.writeFile(
+        "./test.json",
+        {
+          projectId: projectId,
+          commitHash: unProcessedCommits[index]!.commitHash,
+          commitMessage: unProcessedCommits[index]!.commitMessage,
+          commitAuthorName: unProcessedCommits[index]!.commitAuthorName,
+          commitAuthorAvatar: unProcessedCommits[index]!.commitAuthorAvatar,
+          commitDate: unProcessedCommits[index]!.commitDate,
+          summary: summary || "",
+        },
+        function (err) {
+          if (err) console.error(err);
+        },
+      );
+
       return {
         projectId: projectId,
         commitHash: unProcessedCommits[index]!.commitHash,
@@ -106,9 +125,15 @@ async function filterUnprocessedCommits(
   projectId: string,
   commitHashes: Response[],
 ) {
+  // console.log(commitHashes, "-----------------");
   const processedCommit = await db.commit.findMany({
     where: { projectId },
   });
+  if (!processedCommit.length) {
+    console.log("yello");
+    console.log(processedCommit);
+    return commitHashes;
+  }
 
   const unProcessedCommits = commitHashes.filter(
     (commit) =>
@@ -116,6 +141,7 @@ async function filterUnprocessedCommits(
         (processedCommit) => processedCommit?.commitHash == commit.commitHash,
       ),
   );
-
   return unProcessedCommits;
 }
+
+pollCommits("cm4noe9340000bd7rp3qwgx4a");
