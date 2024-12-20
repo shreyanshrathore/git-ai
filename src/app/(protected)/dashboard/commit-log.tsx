@@ -8,7 +8,6 @@ import { ExternalLink } from "lucide-react";
 
 const CommitLog = () => {
   const { project, projectId } = useProject();
-  console.log(project, projectId);
   const { data: commits } = api.project.getCommits.useQuery({ projectId });
   return (
     <>

@@ -33,7 +33,6 @@ const SyncUser = async () => {
     },
   });
 
-  console.log(res, "result");
 
   return redirect("/dashboard");
 };

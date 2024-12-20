@@ -26,7 +26,6 @@ export async function uploadFile(
 ) {
   return new Promise((resolve, reject) => {
     try {
-      console.log(file.name, "fileame");
       const storageRef = ref(storage, file.name);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -50,7 +49,7 @@ export async function uploadFile(
         (error) => reject(error),
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
-            resolve(downloadUrl);
+            resolve(downloadUrl as string);
           });
         },
       );

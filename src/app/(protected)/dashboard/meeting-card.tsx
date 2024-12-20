@@ -6,10 +6,35 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { uploadFile } from "~/lib/firebase";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import { api } from "~/trpc/react";
+import useProject from "~/hooks/use-project";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const MeetingCard = () => {
+  const project = useProject();
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState<Boolean>(false);
+  const router = useRouter();
+  const uploadMeeting = api.project.uploadMeeting.useMutation();
+  const processMeeting = useMutation({
+    mutationFn: async (data: {
+      meetingUrl: string;
+      meetingId: string;
+      projectId: string;
+    }) => {
+      const { meetingId, meetingUrl, projectId } = data;
+      const response = await axios.post("/api/process-meeting", {
+        meetingId,
+        meetingUrl,
+        projectId,
+      });
+      return response.data;
+    },
+  });
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "audio/*": [".mp3", ".mp4", ".wav", ".m4a"],
@@ -18,9 +43,31 @@ const MeetingCard = () => {
     maxSize: 50_000_000,
     onDrop: async (acceptedFiles) => {
       setIsUploading(true);
-      console.log(acceptedFiles);
       const acceptedFile = acceptedFiles[0];
-      const downloadUrl = await uploadFile(acceptedFile as File, setProgress);
+      if (!acceptedFile) return;
+      const downloadUrl = (await uploadFile(
+        acceptedFile as File,
+        setProgress,
+      )) as string;
+      uploadMeeting.mutate(
+        {
+          meetingUrl: downloadUrl,
+          name: acceptedFile.name,
+          projectId: project.projectId,
+        },
+        {
+          onSuccess: (meeting) => {
+            toast.success("Meeting uploaded successfully"),
+              router.push("/meetings");
+            processMeeting.mutateAsync({
+              meetingId: meeting.id,
+              meetingUrl: downloadUrl,
+              projectId: project.projectId,
+            });
+          },
+          onError: () => toast.error("Failed to upoad meeting"),
+        },
+      );
       window.alert(downloadUrl);
       setIsUploading(false);
     },
