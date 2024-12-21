@@ -137,5 +137,3 @@ async function filterUnprocessedCommits(
   );
   return unProcessedCommits;
 }
-
-pollCommits("cm4noe9340000bd7rp3qwgx4a");
