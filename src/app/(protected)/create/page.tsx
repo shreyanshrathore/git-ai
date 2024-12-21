@@ -44,6 +44,10 @@ const CreatePage = () => {
       });
     }
   }
+
+  const hasEnoughCredits = checkCredits?.data?.userCredit
+    ? checkCredits.data.fileCount <= checkCredits.data.userCredit
+    : true;
   return (
     <div className="flex h-full items-center justify-center gap-12">
       <img src="./undraw_github.svg" className="h-56 w-auto" />
@@ -88,7 +92,7 @@ const CreatePage = () => {
                       this repository
                     </p>
                   </div>
-                  <p className="ml-8 to-blue-600 text-sm">
+                  <p className="ml-8 text-sm text-blue-600">
                     {" "}
                     You have{" "}
                     <strong>
@@ -102,7 +106,9 @@ const CreatePage = () => {
 
             <Button
               type="submit"
-              disabled={project.isPending || checkCredits.isPending}
+              disabled={
+                project.isPending || checkCredits.isPending || !hasEnoughCredits
+              }
             >
               {!!checkCredits.data ? "Create Project" : "Check Credit"}
             </Button>
