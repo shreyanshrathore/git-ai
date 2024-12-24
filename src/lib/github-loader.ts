@@ -16,6 +16,7 @@ const getFileCount = async (
     repo: githubRepo,
     path,
   });
+  console.log(data);
 
   if (!Array.isArray(data) && data.type === "file") {
     return acc + 1;
@@ -54,6 +55,7 @@ export const checkCredits = async (githubUrl: string, githubToken?: string) => {
 
   if (!githubOwner || !githubRepo) return 0;
   const fileCount = await getFileCount("", octokit, githubOwner, githubRepo, 0);
+  console.log(fileCount, "file--");
   return fileCount;
 };
 export const LoadGithubRepo = async (

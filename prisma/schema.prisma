@@ -23,6 +23,8 @@ model User {
 
     emailAddress String @unique
 
+    githubUserName String?
+
     credits            Int                 @default(150)
     UserToProject      UserToProject[]
     questionAsked      Question[]

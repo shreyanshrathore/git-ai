@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { pollCommits } from "~/lib/github";
+import { getAllRepos, pollCommits } from "~/lib/github";
 import { checkCredits, indexGithubRepo } from "~/lib/github-loader";
+import { auth } from "@clerk/nextjs/server";
 
 export const projectRouter = createTRPCRouter({
   createProject: protectedProcedure
@@ -244,4 +245,19 @@ export const projectRouter = createTRPCRouter({
       });
       return { fileCount, userCredit: userCredit?.credits || 0 };
     }),
+
+  getUser: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.db.user.findUnique({
+      where: { id: ctx.user.userId! },
+    });
+    return user;
+  }),
+
+  getAllRepo: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.db.user.findUnique({
+      where: { id: ctx.user.userId! },
+    });
+    const repos = await getAllRepos(user?.githubUserName!);
+    return repos;
+  }),
 });

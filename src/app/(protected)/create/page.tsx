@@ -1,12 +1,20 @@
 "use client";
 
-import { Info } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import useRefetch from "~/hooks/use-refetch";
 import { api } from "~/trpc/react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { useState } from "react";
 
 type FormInput = {
   repoUrl: string;
@@ -17,6 +25,11 @@ const CreatePage = () => {
   const { register, handleSubmit, reset } = useForm<FormInput>();
   const project = api.project.createProject.useMutation();
   const checkCredits = api.project.checkCredits.useMutation();
+  const { data: user } = api.project.getUser.useQuery();
+  const allRepo = api.project.getAllRepo.useQuery();
+  const [repoName, setRepoName] = useState<string>("");
+  const [repoUrl, setRepoUrl] = useState<string>("");
+  const repos = allRepo.data;
   const refetch = useRefetch();
   function onSubmit(data: FormInput) {
     if (!!checkCredits.data) {
@@ -63,17 +76,73 @@ const CreatePage = () => {
         <div className="h-4"> </div>
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <Select
+                value=""
+                onValueChange={(val) => {
+                  const repoIndex = repos?.find(
+                    (repo) => val === repo.repoName,
+                  );
+                  if (repoIndex) {
+                    setRepoName(repoIndex.repoName);
+                    setRepoUrl(repoIndex.repoUrl);
+                  }
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder="Select Your GitHub Repository"
+                    defaultValue={9}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {allRepo.isPending && (
+                    <div className="flex h-32 items-center justify-center">
+                      <span className="text-gray-500">
+                        Fetching repositories...{" "}
+                        <div className="flex justify-center">
+                          <Loader2 className="animate-spin" />
+                        </div>
+                      </span>
+                    </div>
+                  )}
+                  {allRepo.isSuccess && repos?.length! > 0
+                    ? repos?.map((repo, index) => (
+                        <SelectItem
+                          className="w-auto"
+                          key={index}
+                          value={repo.repoName}
+                        >
+                          {repo.repoName}
+                        </SelectItem>
+                      ))
+                    : allRepo.isSuccess && (
+                        <div className="flex h-32 items-center justify-center">
+                          <span className="text-gray-500">
+                            No repositories available
+                          </span>
+                        </div>
+                      )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="h-4"></div>
             <Input
               {...register("projectname", { required: true })}
               placeholder="ProjectName"
               required
+              onChange={(e) => setRepoName(e.target.value)}
+              value={repoName}
             />
             <div className="h-2"></div>
             <Input
               {...register("repoUrl", { required: true })}
               placeholder="Repo URL"
               type="url"
-              //   required
+              value={repoUrl}
+              onChange={(e) => setRepoUrl(e.target.value)}
+              required
             />
             <div className="h-2"></div>
             <Input

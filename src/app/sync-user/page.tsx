@@ -11,6 +11,7 @@ const SyncUser = async () => {
 
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
+  console.log("clerk user", user);
   if (!user.emailAddresses[0]?.emailAddress) {
     return notFound();
   }
@@ -23,6 +24,7 @@ const SyncUser = async () => {
       imageUrl: user.imageUrl,
       firstName: user.firstName,
       lastName: user.lastName,
+      githubUserName: user.externalAccounts[0]?.firstName!,
     },
     create: {
       id: userId,
@@ -32,7 +34,6 @@ const SyncUser = async () => {
       lastName: user.lastName,
     },
   });
-
 
   return redirect("/dashboard");
 };

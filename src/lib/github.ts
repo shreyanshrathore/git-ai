@@ -15,6 +15,33 @@ type Response = {
   commitDate: string;
 };
 
+type UserRepo = {
+  repoName: string;
+  repoUrl: string;
+};
+
+export async function getAllRepos(accountName: string): Promise<UserRepo[]> {
+  const repos: UserRepo[] = [];
+  let page = 1;
+
+  try {
+    const response = await octokit.rest.repos.listForUser({
+      username: accountName,
+      per_page: 100,
+      page,
+    });
+
+    response.data.map((repo) => {
+      repos.push({ repoName: repo.name, repoUrl: repo.html_url });
+    });
+
+    return repos;
+  } catch (error) {
+    console.error("Error fetching repositories:", error);
+    return [];
+  }
+}
+
 export const getCommitHashes = async (
   githubUrl: string,
 ): Promise<Response[]> => {

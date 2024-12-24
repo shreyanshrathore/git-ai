@@ -41,7 +41,6 @@ export async function POST(request: Request) {
       data: { credits: { increment: credit } },
     });
 
-
     return NextResponse.json(
       { message: "Credit Added successfully" },
       { status: 200 },

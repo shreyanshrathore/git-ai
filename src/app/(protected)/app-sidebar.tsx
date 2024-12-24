@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import {
   Sidebar,
@@ -103,7 +103,13 @@ export function AppSideBar() {
               {projects?.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild>
-                    <div onClick={() => setProjectId(item.id)}>
+                    <div
+                      onClick={() => {
+                        setProjectId(item.id);
+                        redirect("/dashboard");
+                      }}
+                      className="cursor-pointer"
+                    >
                       <div
                         className={cn(
                           "flex size-6 items-center justify-center rounded-sm border bg-white text-sm text-primary",
