@@ -10,7 +10,9 @@
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "dev": "next dev --turbo",
+    "next": "next dev --turbo",
+    "dev": "concurrently \"npm run next\" \"bun run src/server/websocket.ts\"",
+    "ws-server": "ts-node src/server/websocket.ts",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "postinstall": "prisma generate",
@@ -18,7 +20,8 @@
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "websocket": "tsx src/server/index.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.0.7",
@@ -27,6 +30,7 @@
     "@hookform/resolvers": "^3.9.1",
     "@langchain/community": "^0.3.17",
     "@langchain/core": "^0.3.22",
+    "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/client": "^5.14.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
@@ -55,6 +59,7 @@
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
+    "@react-oauth/google": "^0.12.1",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.50.0",
     "@trpc/client": "^11.0.0-rc.446",
@@ -63,6 +68,7 @@
     "@types/react-dropzone": "^4.2.2",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/stripe": "^8.0.417",
+    "@types/ws": "^8.5.14",
     "@uiw/react-md-editor": "^4.0.4",
     "ai": "^4.0.14",
     "assemblyai": "^4.8.0",
@@ -74,11 +80,13 @@
     "embla-carousel-react": "^8.5.1",
     "firebase": "^11.1.0",
     "geist": "^1.3.0",
+    "googleapis": "^144.0.0",
     "ignore": "^6.0.2",
     "input-otp": "^1.4.1",
     "jsonfile": "^6.1.0",
     "lucide-react": "^0.468.0",
     "next": "^15.0.1",
+    "next-auth": "^4.24.11",
     "next-themes": "^0.4.4",
     "octokit": "^4.0.2",
     "react": "^18.3.1",
@@ -98,6 +106,7 @@
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.1.0",
     "vaul": "^1.1.1",
+    "ws": "^8.18.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -108,6 +117,7 @@
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
+    "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "^15.0.1",
     "postcss": "^8.4.39",
@@ -115,6 +125,7 @@
     "prettier-plugin-tailwindcss": "^0.6.5",
     "prisma": "^6.1.0",
     "tailwindcss": "^3.4.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   },
   "ct3aMetadata": {

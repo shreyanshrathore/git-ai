@@ -1,6 +1,6 @@
 import { UserButton } from "@clerk/nextjs";
 import React from "react";
-import { SidebarProvider } from "~/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
 import { AppSideBar } from "./app-sidebar";
 
 type Props = {
@@ -13,6 +13,7 @@ const SideBarLayout = ({ children }: Props) => {
 
       <main className="m-2 w-full">
         <div className="shadow- corder flex items-center gap-2 rounded-md border border-sidebar-border bg-sidebar p-2 px-4 shadow">
+          <SidebarTrigger />
           {/* <SearchBar /> */}
           <div className="ml-auto"></div>
           <UserButton />

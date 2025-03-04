@@ -3,10 +3,10 @@ import {
   Bot,
   CreditCard,
   LayoutDashboardIcon,
+  MessageSquare,
   PlusIcon,
   Presentation,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import { Button } from "~/components/ui/button";
@@ -46,25 +46,30 @@ const item = [
     url: "/billing",
     icon: CreditCard,
   },
+  {
+    title: "Chat",
+    url: "/chat",
+    icon: MessageSquare,
+  },
 ];
 
 export function AppSideBar() {
   const pathname = usePathname();
-  const { open } = useSidebar();
+  const { open, setOpen } = useSidebar();
 
   const { project, projects, projectId, setProjectId } = useProject();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2">
-          <Image
+          {/* <Image
             src="/public/undraw_github.svg"
             alt="logo image"
             width={40}
             height={40}
-          />
+          /> */}
           {open && (
-            <h1 className="text-xl font-bold text-primary/80">Git-AI</h1>
+            <h1 className="p-2 text-xl font-bold text-primary/80">Git-AI</h1>
           )}
         </div>
       </SidebarHeader>
