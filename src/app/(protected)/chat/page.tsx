@@ -109,7 +109,13 @@ const ChatPage = () => {
                 key={index}
                 onClick={() => fetchMessage(chat.chat.id!, chat.senders[0]!)}
               >
-                <UserSearchCard user={chat.senders[0]!} />
+                <UserSearchCard
+                  user={chat.senders[0]!}
+                  activeUserId={currentChat.receiver?.id}
+                  lastMessage={
+                    chat.chat.messages[chat.chat.messages.length - 1]?.content
+                  }
+                />
               </div>
             ))}
           </div>

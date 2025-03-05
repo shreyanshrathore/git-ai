@@ -59,18 +59,20 @@ export function AppSideBar() {
 
   const { project, projects, projectId, setProjectId } = useProject();
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar
+      collapsible="icon"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       <SidebarHeader>
         <div className="flex items-center gap-2">
-          {/* <Image
-            src="/public/undraw_github.svg"
-            alt="logo image"
-            width={40}
-            height={40}
-          /> */}
-          {open && (
-            <h1 className="p-2 text-xl font-bold text-primary/80">Git-AI</h1>
-          )}
+          <h1
+            className={`p-2 text-xl font-bold text-primary/80 ${
+              open ? "visible" : "invisible"
+            } whitespace-nowrap`}
+          >
+            GIT-AI
+          </h1>
         </div>
       </SidebarHeader>
       <SidebarContent>
