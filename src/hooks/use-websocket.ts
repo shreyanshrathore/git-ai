@@ -36,7 +36,7 @@ export const useWebSocket = (
 
     try {
       // Connect to WebSocket server
-      ws.current = new WebSocket("ws://git.shreyansh-rathore.in:3002");
+      ws.current = new WebSocket("ws://localhost:3002");
 
       ws.current.onopen = () => {
         console.log("WebSocket connected for chatId:", chatId);

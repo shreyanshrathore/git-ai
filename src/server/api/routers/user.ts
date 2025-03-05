@@ -200,6 +200,7 @@ export const userRouter = createTRPCRouter({
 
   getAllChats: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.user.userId as string;
+
     const all_chats = await db.chat.findMany({
       where: {
         participants: { some: { userId: userId } },
@@ -208,7 +209,18 @@ export const userRouter = createTRPCRouter({
         participants: {
           include: { user: true },
         },
+        messages: {
+          orderBy: { createdAt: "desc" }, // Get the latest message for each chat
+          take: 1, // Fetch only the latest message
+        },
       },
+    });
+
+    // Sort chats based on the latest message timestamp
+    all_chats.sort((a, b) => {
+      const lastMessageA = a.messages[0]?.createdAt || new Date(0); // Default to oldest date if no messages
+      const lastMessageB = b.messages[0]?.createdAt || new Date(0);
+      return lastMessageB.getTime() - lastMessageA.getTime(); // Sort descending (newest first)
     });
 
     const chatsWithSenders = all_chats.map((chat) => ({
