@@ -77,7 +77,7 @@ export function AppSideBar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
 
           <SidebarContent>
             <SidebarMenu>
