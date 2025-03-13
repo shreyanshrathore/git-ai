@@ -73,6 +73,7 @@ export function AppSideBar() {
           >
             GIT-AI
           </h1>
+          <img src="https://zevo360-dev-media-storage-public.s3.ap-south-1.amazonaws.com/zevo360/country/india.png" />
         </div>
       </SidebarHeader>
       <SidebarContent>
